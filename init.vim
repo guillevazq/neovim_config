@@ -8,8 +8,9 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set smartindent
 
+
+set autoindent
 set fileformat=unix
 set guicursor=
 set nohlsearch
@@ -28,10 +29,10 @@ Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
 Plug 'lifepillar/vim-solarized8'
 
-" File tree explorer
+" File tree explorer (not show full path)
 Plug 'preservim/nerdtree'
 
-" File fuzzy finder
+" File fuzzy finder (add borders)
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -42,13 +43,14 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 
 " Commenter
-Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-commentary'
 
 " Autocompletion
-Plug 'neovim/nvim-lspconfig'
-Plug 'kabouzeid/nvim-lspinstall'
-Plug 'glepnir/lspsaga.nvim'
-Plug 'hrsh7th/nvim-compe'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" Plug 'kabouzeid/nvim-lspinstall'
+" Plug 'glepnir/lspsaga.nvim'
+" Plug 'hrsh7th/nvim-compe'
 
 " Information about functions
 
@@ -61,8 +63,14 @@ Plug 'tpope/vim-fugitive'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/playground'
 
+" Function information
+" Plug 'ray-x/lsp_signature.nvim'
+" Self closing tags
+Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
+
+" lua require "lsp_signature".setup()
 
 " Avoid nerdtree icon bug
 if exists("g:loaded_webdevicons")
@@ -70,28 +78,30 @@ if exists("g:loaded_webdevicons")
 endif
 
 let g:webdevicons_enable_nerdtree = 1
-
 let g:NERDTreeMinimalUI=1
+let g:NERDTreeMinimalMenu=1
+let g:NERDTreeWinSize=26
+
+nmap <C-_> gcc
+vmap <C-_> gcc<Esc>
 
 " Set colorscheme
 set background=dark
 colorscheme onedark
 
-" Keyboard mappings
+" Keyboard mappings (VSCode shortcuts)
 nnoremap <C-b> :NERDTreeToggle<CR>
 nnoremap <C-p> <cmd>Telescope find_files layout_config.prompt_position=center<cr>
 
-nmap <C-_> <plug>NERDCommenterToggle
-vmap <C-_> <plug>NERDCommenterToggle
-
+" Run files
 nnoremap ,py :w<CR> :!python3 %<CR>
 nnoremap ,c :w<CR> :!gcc % -o executable && ./executable<CR>
 nnoremap ,so :w<CR> :so %<CR>
 
 " Activate good syntax
 lua require'nvim-treesitter.configs'.setup {highlight = {enable = true}}
-lua require'lspconfig'.pyright.setup{}
 
+" Customize telescope
 lua << EOF
 require('telescope').setup {
     defaults = {
@@ -113,3 +123,5 @@ require('telescope').setup {
       }
     }
 EOF
+
+source $HOME/.config/nvim/plug-config/coc.vim
