@@ -8,7 +8,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-
+set ic
 
 set autoindent
 set fileformat=unix
@@ -21,6 +21,7 @@ set noswapfile
 set incsearch
 set signcolumn=yes
 set cindent
+set splitright
 
 call plug#begin('~/.vim/plugged')
 
@@ -41,6 +42,7 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'airblade/vim-rooter'
 Plug 'ryanoasis/vim-devicons'
 Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'unkiwii/vim-nerdtree-sync'
 
 " Commenter
 Plug 'tpope/vim-commentary'
@@ -68,7 +70,26 @@ Plug 'nvim-treesitter/playground'
 " Self closing tags
 Plug 'jiangmiao/auto-pairs'
 
+" HTML Emmet
+Plug 'mattn/emmet-vim'
+
 call plug#end()
+
+let g:nerdtree_sync_cursorline = 1
+
+" Start NERDTree and put the cursor back in the other window.
+autocmd VimEnter * NERDTree | wincmd p
+
+" Exit vim if nerdtree is the only window left
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
+autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+
+" Enable emmet only for css and html files
+let g:user_emmet_install_global = 0
+autocmd FileType html,css EmmetInstall
 
 " lua require "lsp_signature".setup()
 
@@ -80,21 +101,21 @@ endif
 let g:webdevicons_enable_nerdtree = 1
 let g:NERDTreeMinimalUI=1
 let g:NERDTreeMinimalMenu=1
-let g:NERDTreeWinSize=26
+let g:NERDTreeWinSize=31
 
 nmap <C-_> gcc
 vmap <C-_> gcc<Esc>
 
 " Set colorscheme
 set background=dark
-colorscheme onedark
+colorscheme gruvbox
 
 " Keyboard mappings (VSCode shortcuts)
 nnoremap <C-b> :NERDTreeToggle<CR>
 nnoremap <C-p> <cmd>Telescope find_files layout_config.prompt_position=center<cr>
 
 " Run files
-nnoremap ,py :w<CR> :!python3 %<CR>
+nnoremap ,py :w<CR> :!python %<CR>
 nnoremap ,c :w<CR> :!gcc % -o executable && ./executable<CR>
 nnoremap ,so :w<CR> :so %<CR>
 
@@ -115,13 +136,14 @@ require('telescope').setup {
             }
         },
         layout_config = {
-            width = 0.5,
-            height = 0.4,
+            width = 0.85,
+            height = 0.5,
             prompt_position = "top",
-            preview_width = 0.7;
+            preview_width = 0.6;
         },
       }
     }
+
 EOF
 
 source $HOME/.config/nvim/plug-config/coc.vim
