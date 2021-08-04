@@ -10,6 +10,10 @@ set shiftwidth=4
 set expandtab
 set ic
 
+set nobackup
+set nowritebackup
+set updatetime=300
+
 set autoindent
 set fileformat=unix
 set guicursor=
@@ -22,6 +26,53 @@ set incsearch
 set signcolumn=yes
 set cindent
 set splitright
+
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+                               
+let g:VM_maps = {}
+let g:VM_maps['Find Under']         = '<C-d>'           " replace C-n
+let g:VM_maps['Find Subword Under'] = '<C-d>'           " replace visual C-n
+
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use ? to show documentation in preview window.
+nnoremap <silent> ? :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+" autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Add (Neo)Vim's native statusline support.
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 call plug#begin('~/.vim/plugged')
 
@@ -73,6 +124,9 @@ Plug 'jiangmiao/auto-pairs'
 " HTML Emmet
 Plug 'mattn/emmet-vim'
 
+" Multicursor
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
 call plug#end()
 
 let g:nerdtree_sync_cursorline = 1
@@ -84,8 +138,8 @@ autocmd VimEnter * NERDTree | wincmd p
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
+" autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+    " \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
 " Enable emmet only for css and html files
 let g:user_emmet_install_global = 0
@@ -101,7 +155,7 @@ endif
 let g:webdevicons_enable_nerdtree = 1
 let g:NERDTreeMinimalUI=1
 let g:NERDTreeMinimalMenu=1
-let g:NERDTreeWinSize=31
+let g:NERDTreeWinSize=32
 
 nmap <C-_> gcc
 vmap <C-_> gcc<Esc>
