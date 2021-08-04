@@ -35,7 +35,6 @@ else
 endif
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
                                
@@ -137,13 +136,9 @@ autocmd VimEnter * NERDTree | wincmd p
 " Exit vim if nerdtree is the only window left
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
-" If another buffer tries to replace NERDTree, put it in the other window, and bring back NERDTree.
-" autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-    " \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
-
 " Enable emmet only for css and html files
-let g:user_emmet_install_global = 0
-autocmd FileType html,css EmmetInstall
+" let g:user_emmet_install_global = 0
+" autocmd FileType html,css EmmetInstall
 
 " lua require "lsp_signature".setup()
 
@@ -171,7 +166,7 @@ nnoremap <C-p> <cmd>Telescope find_files layout_config.prompt_position=center<cr
 " Run files
 nnoremap ,py :w<CR> :!python %<CR>
 nnoremap ,c :w<CR> :!gcc % -o executable && ./executable<CR>
-nnoremap ,so :w<CR> :so %<CR>
+nnoremap ,so :w<CR> :so %<CR><C-w><C-w>
 
 " Activate good syntax
 lua require'nvim-treesitter.configs'.setup {highlight = {enable = true}}
