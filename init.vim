@@ -10,6 +10,10 @@ set shiftwidth=4
 set expandtab
 set ic
 
+autocmd FileType python set sw=4
+autocmd FileType python set ts=4
+autocmd FileType python set sts=4
+
 set nobackup
 set nowritebackup
 set updatetime=300
@@ -26,6 +30,13 @@ set incsearch
 set signcolumn=yes
 set cindent
 set splitright
+
+nnoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-4>"
+nnoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-5>"
+" inoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+" inoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+vnoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-4>"
+vnoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-5>"
 
 if has("nvim-0.5.0") || has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
@@ -79,6 +90,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
 Plug 'lifepillar/vim-solarized8'
+Plug 'shaunsingh/nord.nvim'
+Plug 'crusoexia/vim-monokai'
 
 " File tree explorer (not show full path)
 Plug 'preservim/nerdtree'
@@ -100,14 +113,6 @@ Plug 'tpope/vim-commentary'
 " Autocompletion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Plug 'kabouzeid/nvim-lspinstall'
-" Plug 'glepnir/lspsaga.nvim'
-" Plug 'hrsh7th/nvim-compe'
-
-" Information about functions
-
-" Status bar
-
 " Git commands
 Plug 'tpope/vim-fugitive'
 
@@ -120,15 +125,23 @@ Plug 'nvim-treesitter/playground'
 " Self closing tags
 Plug 'jiangmiao/auto-pairs'
 
-" HTML Emmet
+" HTML
 Plug 'mattn/emmet-vim'
 
 " Multicursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
+" Gitignore highlighting
+Plug 'gisphm/vim-gitignore'
+
+" Custom snippets
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+
 call plug#end()
 
 let g:nerdtree_sync_cursorline = 1
+let NERDTreeShowHidden=1
 
 " Start NERDTree and put the cursor back in the other window.
 autocmd VimEnter * NERDTree | wincmd p
@@ -157,7 +170,7 @@ vmap <C-_> gcc<Esc>
 
 " Set colorscheme
 set background=dark
-colorscheme gruvbox
+colorscheme monokai
 
 " Keyboard mappings (VSCode shortcuts)
 nnoremap <C-b> :NERDTreeToggle<CR>
@@ -194,5 +207,7 @@ require('telescope').setup {
     }
 
 EOF
+
+let g:UltiSnipsEditSplit = "vertical"
 
 source $HOME/.config/nvim/plug-config/coc.vim
