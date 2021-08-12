@@ -31,13 +31,6 @@ set signcolumn=yes
 set cindent
 set splitright
 
-nnoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-4>"
-nnoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-5>"
-" inoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-" inoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-vnoremap <silent><nowait><expr> <C-4> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-4>"
-vnoremap <silent><nowait><expr> <C-5> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-5>"
-
 if has("nvim-0.5.0") || has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
@@ -170,7 +163,7 @@ vmap <C-_> gcc<Esc>
 
 " Set colorscheme
 set background=dark
-colorscheme monokai
+colorscheme onedark
 
 " Keyboard mappings (VSCode shortcuts)
 nnoremap <C-b> :NERDTreeToggle<CR>
