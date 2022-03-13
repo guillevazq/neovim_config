@@ -163,7 +163,7 @@ vmap <C-_> gcc<Esc>
 
 " Set colorscheme
 set background=dark
-colorscheme onedark
+colorscheme gruvbox
 
 " Keyboard mappings (VSCode shortcuts)
 nnoremap <C-b> :NERDTreeToggle<CR>
@@ -171,7 +171,9 @@ nnoremap <C-p> <cmd>Telescope find_files layout_config.prompt_position=center<cr
 
 " Run files
 nnoremap ,py :w<CR> :!python %<CR>
-nnoremap ,c :w<CR> :!gcc % -o executable && ./executable<CR>
+nnoremap ,C :w<CR> :!gcc % -o executable && ./executable<CR>
+nnoremap ,c :w<CR> :!g++ % -o executable && ./executable<CR>
+nnoremap ,n :w<CR> :!gnome-terminal -- bash -c "g++ % -o executable && ./executable"<CR>
 nnoremap ,so :w<CR> :so %<CR><C-w><C-w>
 
 " Activate good syntax
@@ -192,7 +194,7 @@ require('telescope').setup {
         },
         layout_config = {
             width = 0.85,
-            height = 0.5,
+            height = 0.7,
             prompt_position = "top",
             preview_width = 0.6;
         },
@@ -203,4 +205,5 @@ EOF
 
 let g:UltiSnipsEditSplit = "vertical"
 
+autocmd BufNewFile *.cpp r ~/.config/nvim/custom_cpp_snippets/template.cpp
 source $HOME/.config/nvim/plug-config/coc.vim
