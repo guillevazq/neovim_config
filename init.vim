@@ -1,209 +1,181 @@
-set encoding=utf-8
-set number relativenumber
-syntax enable
-set noswapfile
-set scrolloff=10
+call plug#begin()
 
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
-set ic
-
-autocmd FileType python set sw=4
-autocmd FileType python set ts=4
-autocmd FileType python set sts=4
-
-set nobackup
-set nowritebackup
-set updatetime=300
-
-set autoindent
-set fileformat=unix
-set guicursor=
-set nohlsearch
-set hidden
-set noerrorbells
-set nowrap
-set noswapfile
-set incsearch
-set signcolumn=yes
-set cindent
-set splitright
-
-if has("nvim-0.5.0") || has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-                               
-let g:VM_maps = {}
-let g:VM_maps['Find Under']         = '<C-d>'           " replace C-n
-let g:VM_maps['Find Subword Under'] = '<C-d>'           " replace visual C-n
-
-" Use tab for trigger completion with characters ahead and navigate.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use ? to show documentation in preview window.
-nnoremap <silent> ? :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor.
-" autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Add (Neo)Vim's native statusline support.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-call plug#begin('~/.vim/plugged')
-
-" Color schemes
-Plug 'morhetz/gruvbox'
+Plug 'sickill/vim-monokai'
 Plug 'joshdick/onedark.vim'
-Plug 'lifepillar/vim-solarized8'
-Plug 'shaunsingh/nord.nvim'
-Plug 'crusoexia/vim-monokai'
+Plug 'https://gitlab.com/protesilaos/tempus-themes-vim.git'
+Plug 'vim-scripts/CycleColor'
 
-" File tree explorer (not show full path)
+Plug 'itchyny/lightline.vim'
+
+Plug 'ap/vim-buftabline'
+
 Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'scrooloose/nerdtree-project-plugin'
+Plug 'PhilRunninger/nerdtree-visual-selection'
 
-" File fuzzy finder (add borders)
-Plug 'nvim-lua/popup.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+Plug 'tpope/vim-fugitive'
+
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
-" Dependencies for more information in the tree
-Plug 'airblade/vim-rooter'
-Plug 'ryanoasis/vim-devicons'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'unkiwii/vim-nerdtree-sync'
-
-" Commenter
-Plug 'tpope/vim-commentary'
-
-" Autocompletion
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" Git commands
-Plug 'tpope/vim-fugitive'
-
-" Better syntax
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
-Plug 'nvim-treesitter/playground'
-
-" Function information
-" Plug 'ray-x/lsp_signature.nvim'
-" Self closing tags
-Plug 'jiangmiao/auto-pairs'
-
-" HTML
 Plug 'mattn/emmet-vim'
 
-" Multicursor
-Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'tpope/vim-commentary'
 
-" Gitignore highlighting
-Plug 'gisphm/vim-gitignore'
-
-" Custom snippets
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
-let g:nerdtree_sync_cursorline = 1
-let NERDTreeShowHidden=1
+let g:lightline = {'colorscheme': 'onedark'}
+colorscheme onedark
 
-" Start NERDTree and put the cursor back in the other window.
-autocmd VimEnter * NERDTree | wincmd p
+set hidden
+nnoremap <C-T> :bprev<CR>
+nnoremap <C-Y> :bnext<CR>
 
-" Exit vim if nerdtree is the only window left
+" Exit Vim if NERDTree is the only window remaining in the only tab.
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
-" Enable emmet only for css and html files
-" let g:user_emmet_install_global = 0
-" autocmd FileType html,css EmmetInstall
+" Close the tab if NERDTree is the only window remaining in it.
+autocmd BufEnter * if winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+let NERDTreeMinimalUI=1
+let g:NERDTreeWinSize=28
+let NERDTreeShowHidden=1
+noremap <C-b> :NERDTreeToggleVCS<CR>
 
-" lua require "lsp_signature".setup()
-
-" Avoid nerdtree icon bug
-if exists("g:loaded_webdevicons")
-    call webdevicons#refresh()
+if (has("termguicolors"))
+    set termguicolors
 endif
 
-let g:webdevicons_enable_nerdtree = 1
-let g:NERDTreeMinimalUI=1
-let g:NERDTreeMinimalMenu=1
-let g:NERDTreeWinSize=32
+set encoding=utf-8
+set showmatch
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set noshowmode
+set laststatus=2
+set incsearch
+set guicursor=i:block
+syntax enable
+set nohlsearch
+set splitright
+set number
 
-nmap <C-_> gcc
-vmap <C-_> gcc<Esc>
-
-" Set colorscheme
-set background=dark
-colorscheme gruvbox
-
-" Keyboard mappings (VSCode shortcuts)
-nnoremap <C-b> :NERDTreeToggle<CR>
-nnoremap <C-p> <cmd>Telescope find_files layout_config.prompt_position=center<cr>
-
-" Run files
-nnoremap ,py :w<CR> :!python %<CR>
-nnoremap ,C :w<CR> :!gcc % -o executable && ./executable<CR>
-nnoremap ,c :w<CR> :!g++ % -o executable && ./executable<CR>
-nnoremap ,n :w<CR> :!gnome-terminal -- bash -c "g++ % -o executable && ./executable"<CR>
-nnoremap ,so :w<CR> :so %<CR><C-w><C-w>
-
-" Activate good syntax
-lua require'nvim-treesitter.configs'.setup {highlight = {enable = true}}
-
-" Customize telescope
 lua << EOF
-require('telescope').setup {
-    defaults = {
-        sorting_strategy = "ascending",
-        layout_strategy = "horizontal",
-        dynamic_preview_title = true,
-        border = true,
-        mappings = {
-            i = {
-                ["<esc>"] = require('telescope.actions').close,
-            }
-        },
-        layout_config = {
-            width = 0.85,
-            height = 0.7,
-            prompt_position = "top",
-            preview_width = 0.6;
-        },
-      }
-    }
+require'lspconfig'.tsserver.setup{}
 
+require'nvim-treesitter.configs'.setup{ensure_installed = {"javascript", "typescript", "html", "css"}, sync_install = false, highlight = {enable = true}, indent = {enable = true}}
+
+require('telescope').setup{defaults = {file_ignore_patterns = {"node_modules"}, 
+  layout_strategy='vertical',
+  layout_config={
+    anchor="N", width=0.5, prompt_position='top', mirror=true, height=0.25, preview_cutoff=100
+  },
+  sorting_strategy="ascending",
+}}
 EOF
 
-let g:UltiSnipsEditSplit = "vertical"
+let g:user_emmet_mode="n"
+let g:user_emmet_leader_key=","
+let g:user_emmet_settings={'javascript': {'extends': 'jsx'}}
 
-autocmd BufNewFile *.cpp r ~/.config/nvim/custom_cpp_snippets/template.cpp
-source $HOME/.config/nvim/plug-config/coc.vim
+noremap <C-_> :Commentary<CR>
+noremap <C-p> <cmd>Telescope find_files<cr>
+
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      -- REQUIRED - you must specify a snippet engine
+      expand = function(args)
+        vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      end,
+    },
+    window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
+    mapping = cmp.mapping.preset.insert({
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    }),
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' }, -- For vsnip users.
+      -- { name = 'luasnip' }, -- For luasnip users.
+      -- { name = 'ultisnips' }, -- For ultisnips users.
+      -- { name = 'snippy' }, -- For snippy users.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Set configuration for specific filetype.
+  cmp.setup.filetype('gitcommit', {
+    sources = cmp.config.sources({
+      { name = 'cmp_git' }, -- You can specify the `cmp_git` source if you were installed it.
+    }, {
+      { name = 'buffer' },
+    })
+  })
+
+  -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline('/', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = {
+      { name = 'buffer' }
+    }
+  })
+
+  -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  cmp.setup.cmdline(':', {
+    mapping = cmp.mapping.preset.cmdline(),
+    sources = cmp.config.sources({
+      { name = 'path' }
+    }, {
+      { name = 'cmdline' }
+    })
+  })
+
+  -- Setup lspconfig.
+  local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  -- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  require('lspconfig')['tsserver'].setup {
+    capabilities = capabilities
+  }
+EOF
+
+" autocmd BufEnter * lua require'completion'.on_attach()
+
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
